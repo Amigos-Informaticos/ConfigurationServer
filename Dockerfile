@@ -6,4 +6,6 @@ COPY . /app
 
 RUN pip3 --no-cache-dir install -r requirements.txt
 
-CMD ["python3", "app.py"]
+RUN pip3 install gunicorn
+
+CMD ["gunicorn", "app:run_app"]
