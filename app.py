@@ -14,16 +14,7 @@ def hello_world():
 	return 'Hello World!'
 
 
-def configure_app() -> tuple:
-	returned_port = JSONHandler.load("port", False, api_configuration_path)
-	returned_host = JSONHandler.load("host", False, api_configuration_path)
-	return returned_port, returned_host
-
-
-def run_app():
-	port, host = configure_app()
-	app.run(port=port, host=host)
-
-
 if __name__ == '__main__':
-	run_app()
+	port = JSONHandler.load("port", False, api_configuration_path)
+	host = JSONHandler.load("host", False, api_configuration_path)
+	app.run(port=port, host=host)

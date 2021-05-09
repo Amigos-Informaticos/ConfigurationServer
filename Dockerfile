@@ -8,4 +8,4 @@ RUN pip3 --no-cache-dir install -r requirements.txt
 
 RUN pip3 install gunicorn
 
-CMD ["gunicorn", "app:run_app"]
+CMD ["gunicorn", "--bind 0.0.0.0:42100", "app:run_app"]
