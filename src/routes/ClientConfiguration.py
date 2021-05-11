@@ -2,8 +2,7 @@ import json
 
 from flask import Blueprint, Response, request
 
-from src.Configuration.JSONHandler import JSONHandler
-from src.Configuration.Paths import data_dir_path
+from src.Configuration.Connection import Connection
 
 client_configuration = Blueprint("client_configuration", __name__)
 
@@ -14,8 +13,9 @@ def save(client: str):
 	status = 400
 	if payload is not None:
 		saved: bool = True
+		connection = Connection()
 		for key in payload:
-			if not JSONHandler.save(key, payload[key], data_dir_path + client + ".json"):
+			if not connection.save(client, key, payload[key]):
 				saved = False
 				break
 		status = 201 if saved else 406
@@ -29,14 +29,11 @@ def get_values(client: str):
 	if payload is not None:
 		got: bool = True
 		response_payload: dict = {}
-		for key in payload:
-			value = JSONHandler.load(key, True, data_dir_path + client + ".json")
-			if value is not None:
-				response_payload[key] = value
-			else:
-				got = False
-				break
-		if got:
+		connection = Connection()
+		document = connection.get_document_by_client(client)
+		if document is not None:
+			for key in payload:
+				response_payload[key] = document[key]
 			response = Response(
 				json.dumps(response_payload),
 				status=200,
@@ -49,8 +46,8 @@ def get_values(client: str):
 
 @client_configuration.route("/<client>/<resource>", methods=["GET"])
 def get_value(client: str, resource):
-	value = JSONHandler.load(resource, True, data_dir_path + client + ".json")
 	response = Response(status=404)
+	value = Connection().get(client, resource, True)
 	if value is not None:
 		response = Response(
 			json.dumps(value),
@@ -62,7 +59,7 @@ def get_value(client: str, resource):
 
 @client_configuration.route("/<client>/<resource>", methods=["DELETE"])
 def delete_value(client: str, resource: str):
-	if JSONHandler.delete(resource, data_dir_path + client + ".json"):
+	if Connection().delete_resource_by_client(client, resource):
 		response = Response(status=200)
 	else:
 		response = Response(status=404)

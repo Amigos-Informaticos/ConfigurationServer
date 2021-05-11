@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
@@ -40,6 +40,32 @@ class Connection:
 				if as_dict:
 					value = {key: value}
 		return value
+
+	def get_document_by_client(self, client: str) -> Optional[dict]:
+		document: Optional[dict] = None
+		if Connection.document_exists(self.collection, {"client": client}):
+			document = self.collection.find_one({"client": client})
+		return document
+
+	def delete_resource_by_client(self, client: str, resource: str) -> bool:
+		deleted: bool = False
+		document = self.get_document_by_client(client)
+		if document is not None:
+			document.pop(resource)
+			self.collection.update_one(
+				{"client": client},
+				{"$set": document}
+			)
+			deleted = True
+		deleted = True
+		return deleted
+
+	def delete_by_client(self, client: str) -> bool:
+		deleted: bool = False
+		if Connection.document_exists(self.collection, {"client": client}):
+			self.collection.remove({"client": client})
+			deleted = True
+		return deleted
 
 	@staticmethod
 	def document_exists(colletion: Collection, criteria: dict) -> bool:
