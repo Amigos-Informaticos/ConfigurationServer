@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY . /app
 
-RUN pip3 --no-cache-dir install -r requirements.txt
+RUN pip --no-cache-dir install -r requirements.txt
 
-RUN pip3 install gunicorn
+RUN pip install gunicorn
 
 CMD ["gunicorn", "-b", "0.0.0.0:42100", "app:app"]
