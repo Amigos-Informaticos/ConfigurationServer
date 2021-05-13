@@ -53,12 +53,10 @@ class Connection:
 
 	def delete_resource_by_client(self, client: str, resource: str) -> bool:
 		deleted: bool = False
-		document = self.get_document_by_client(client)
-		if document is not None:
-			document.pop(resource)
+		if Connection.document_exists(self.collection, {"client": client}):
 			self.collection.update_one(
 				{"client": client},
-				{"$set": document}
+				{"$unset": {resource: ""}}
 			)
 			deleted = True
 		return deleted
