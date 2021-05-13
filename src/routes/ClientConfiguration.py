@@ -24,7 +24,7 @@ def get_client_document(client: str):
 @client_configuration.route("/<client>", methods=["POST"])
 def save(client: str):
 	payload = request.json
-	status = 400
+	response = Response(status=404)
 	if payload is not None:
 		saved: bool = True
 		connection = Connection()
@@ -32,8 +32,15 @@ def save(client: str):
 			if not connection.save(client, key, payload[key]):
 				saved = False
 				break
-		status = 201 if saved else 406
-	return Response(status=status)
+		if saved:
+			response = Response(
+				json.dumps(connection.get_document_by_client(client)),
+				status=201,
+				mimetype="application/json"
+			)
+		else:
+			response = Response(status=406)
+	return response
 
 
 @client_configuration.route("/<client>", methods=["PATCH"])
@@ -77,4 +84,13 @@ def delete_value(client: str, resource: str):
 		response = Response(status=200)
 	else:
 		response = Response(status=404)
+	return response
+
+
+@client_configuration.route("/<client>", methods=["DELETE"])
+def delete_client(client: str):
+	connection = Connection()
+	response = Response(status=404)
+	if connection.delete_by_client(client):
+		response = Response(status=200)
 	return response
