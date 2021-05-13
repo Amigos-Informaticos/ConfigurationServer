@@ -1,0 +1,129 @@
+openapi: 3.0.0
+info:
+  title: Configuration Server
+  description: Un servidor para almacenar valores de configuración
+  version: 1.0.0
+  contact:
+    name: Edson Manuel Carballo Verra
+    email: edsonmanuelcarballovera@gmail.com
+    url: https://twitter.com/EdsonManuelVera
+servers:
+  - description: Servidor en ejecución
+    url: amigosinformaticos.ddns.net:42100
+paths:
+  /{cliente}:
+    description: Un cliente del servidor de configuracion
+    parameters:
+      - name: cliente
+        description: El nombre de un cliente
+        in: path
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 30
+        required: true
+        example: gourmetRace
+    get:
+      summary: Retorna toda la informacion almacenada de un cliente del servidor
+      tags:
+        - Cliente
+      responses:
+        "200":
+          description: Se ha encontrado y retornado la informacion del cliente
+          content:
+            application/json:
+              schema:
+                example: { cliente: "gourmetRace", port: 80, dbname: "gourmetRace" }
+        "400":
+          description: Solicitud incorrecta
+        "404":
+          description: No se ha encontrado informacion del cliente solicitado
+    post:
+      summary: Registra informacion de un cliente
+      tags:
+        - Cliente
+      requestBody:
+        description: JSON de informacion a registrar del cliente
+        content:
+          application/json:
+            schema:
+              example: { port: 80, dbname: "gourmetRace", importantInfo: "do not lose" }
+      responses:
+        "200":
+          description: La informacion del cliente se ha guardado
+        "400":
+          description: Solicitud incorrecta
+    patch:
+      summary: Retorna multiples valores almacenados de un cliente
+      tags:
+        - Cliente
+      requestBody:
+        description: Un arreglo JSON de los valores que se desean recuperar
+        content:
+          application/json:
+            schema:
+              example:
+                - port
+                - dbname
+                - importantInfo
+      responses:
+        "200":
+          description: Se ha encontrado y retornado los valores solicitados
+          content:
+            application/json:
+              schema:
+                example:
+                  port: 80
+                  dbname: gourmetRace
+                  importantInfo: do not lose
+        "400":
+          description: Solicitud incorrecta
+        "404":
+          description: No se ha encontrado informacion del cliente
+  /{cliente}/{recurso}:
+    description: Un recurso de un cliente especifico
+    parameters:
+      - name: cliente
+        description: El nombre de un cliente
+        in: path
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 30
+        required: true
+        example: gourmetRace
+      - name: recurso
+        description: Un recurso o valor almacenado por un cliente
+        in: path
+        schema:
+          type: string
+          minLength: 1
+          maxLength: 30
+        required: true
+        example: port
+    get:
+      summary: Retorna el valor de un recurso almacenado de un cliente
+      tags:
+        - Cliente
+      responses:
+        "200":
+          description: Se ha encontrado y retornado el valor del recurso solicitado
+          content:
+            application/json:
+              schema:
+                example: { port: 80 }
+        "400":
+          description: Solicitud incorrecta
+        "404":
+          description: No se ha encontrado el recurso o el cliente
+    delete:
+      summary: Elimina un recurso almacenado de un cliente
+      tags:
+        - Cliente
+      responses:
+        "200":
+          description: Se ha eliminado el recurso del cliente
+        "400":
+          description: Solicitud incorrecta
+        "404":
+          description: No se ha encontrado el recurso o el cliente
