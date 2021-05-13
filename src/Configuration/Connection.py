@@ -57,7 +57,6 @@ class Connection:
 				{"$set": document}
 			)
 			deleted = True
-		deleted = True
 		return deleted
 
 	def delete_by_client(self, client: str) -> bool:
@@ -68,9 +67,9 @@ class Connection:
 		return deleted
 
 	@staticmethod
-	def document_exists(colletion: Collection, criteria: dict) -> bool:
-		return colletion.count_documents(criteria)
+	def document_exists(collection: Collection, criteria: dict) -> bool:
+		return collection.count_documents(criteria)
 
 	@staticmethod
 	def get_connection(value: str = "connection_string", path: str = api_configuration_path):
-		return MongoClient(JSONHandler.load(value, path))
+		return MongoClient(JSONHandler.load(value, False, path))
