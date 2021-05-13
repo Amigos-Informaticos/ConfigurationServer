@@ -22,7 +22,7 @@ def save(client: str):
 	return Response(status=status)
 
 
-@client_configuration.route("/<client>", methods=["GET"])
+@client_configuration.route("/<client>", methods=["PATCH"])
 def get_values(client: str):
 	payload = request.json
 	response = Response(status=404)
