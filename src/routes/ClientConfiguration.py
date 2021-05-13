@@ -7,6 +7,20 @@ from src.Configuration.Connection import Connection
 client_configuration = Blueprint("client_configuration", __name__)
 
 
+@client_configuration.route("/<client>", methods=["GET"])
+def get_client_document(client: str):
+	response = Response(status=404)
+	connection = Connection()
+	document = connection.get_document_by_client(client)
+	if document is not None:
+		response = Response(
+			json.dumps(document),
+			status=200,
+			mimetype="application/json"
+		)
+	return response
+
+
 @client_configuration.route("/<client>", methods=["POST"])
 def save(client: str):
 	payload = request.json
