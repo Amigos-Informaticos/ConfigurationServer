@@ -9,7 +9,7 @@ info:
     url: https://twitter.com/EdsonManuelVera
 servers:
   - description: Servidor en ejecución
-    url: amigosinformaticos.ddns.net:42100
+    url: http://amigosinformaticos.ddns.net:42100
 paths:
   /{cliente}:
     description: Un cliente del servidor de configuracion
@@ -49,7 +49,7 @@ paths:
             schema:
               example: { port: 80, dbname: "gourmetRace", importantInfo: "do not lose" }
       responses:
-        "200":
+        "201":
           description: La informacion del cliente se ha guardado
         "400":
           description: Solicitud incorrecta
