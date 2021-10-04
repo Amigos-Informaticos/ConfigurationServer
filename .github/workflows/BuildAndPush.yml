@@ -31,4 +31,4 @@ jobs:
           docker buildx build \
           --push \
           --tag amigosinformaticos/configuration_server:latest \
-          --platform linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/x86_64 .
+          --platform linux/386,linux/amd64,linux/arm/v6,linux/arm64 .
