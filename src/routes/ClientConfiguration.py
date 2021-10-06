@@ -54,7 +54,8 @@ def get_values(client: str):
 		document = connection.get_document_by_client(client)
 		if document is not None:
 			for key in payload:
-				response_payload[key] = document[key]
+				if key in document:
+					response_payload[key] = document[key]
 			response = Response(
 				json.dumps(response_payload),
 				status=200,
