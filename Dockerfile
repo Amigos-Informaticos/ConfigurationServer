@@ -8,4 +8,4 @@ RUN pip --no-cache-dir install -r requirements.txt
 
 RUN pip install gunicorn
 
-CMD ["gunicorn", "-b", "0.0.0.0:42100", "--certfile", "cert.crt", "--keyfile", "key.key", "--workers", "2", "app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:42100", "--certfile", "cert.crt", "--ca-certs", "ca.crt", "--keyfile", "key.key", "--workers", "2", "app:app"]
