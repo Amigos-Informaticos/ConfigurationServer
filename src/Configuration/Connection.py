@@ -44,17 +44,19 @@ class Connection:
 	def get_document_by_client(self, client: str) -> Optional[dict]:
 		document: Optional[dict] = None
 		if Connection.document_exists(self.collection, {"client": client}):
-			document = self.collection.find_one({"client": client})
+			client_document = self.collection.find_one({"client": client})
+			document: dict = {}
+			for key in client_document:
+				if key != "_id":
+					document[key] = client_document[key]
 		return document
 
 	def delete_resource_by_client(self, client: str, resource: str) -> bool:
 		deleted: bool = False
-		document = self.get_document_by_client(client)
-		if document is not None:
-			document.pop(resource)
+		if Connection.document_exists(self.collection, {"client": client}):
 			self.collection.update_one(
 				{"client": client},
-				{"$set": document}
+				{"$unset": {resource: ""}}
 			)
 			deleted = True
 		return deleted
